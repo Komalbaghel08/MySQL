@@ -102,13 +102,13 @@ SELECT * FROM order_details;
 
 -- 📊 STEP 5: Analytical queries (using GROUP BY)
 
--- 1️⃣ Count total orders per customer
+-- 1️Count total orders per customer
 SELECT c.customer_name, COUNT(o.customer_id) AS total_orders
 FROM customers c
 INNER JOIN orders o ON c.customer_id = o.customer_id
 GROUP BY c.customer_name;
 
--- 2️⃣ Total amount spent by each customer (Top 5)
+-- 2️ Total amount spent by each customer (Top 5)
 SELECT c.customer_name, SUM(o.total_amount) AS total_spent
 FROM customers c
 INNER JOIN orders o ON c.customer_id = o.customer_id
@@ -116,7 +116,7 @@ GROUP BY c.customer_name
 ORDER BY total_spent DESC
 LIMIT 5;
 
--- 3️⃣ Number of orders from each country
+-- 3️ Number of orders from each country
 SELECT c.country, COUNT(o.customer_id) AS order_count
 FROM customers c
 INNER JOIN orders o ON c.customer_id = o.customer_id
@@ -130,3 +130,55 @@ FROM
     orders
 GROUP BY 
     customer_id;
+
+-- Q2
+--  Total purchase amount per customer
+SELECT 
+    c.customer_id,
+    c.customer_name,
+    SUM(o.total_amount) AS total_purchase_amount
+FROM 
+    customers c
+JOIN 
+    orders o 
+    ON c.customer_id = o.customer_id
+GROUP BY 
+    c.customer_id, 
+    c.customer_name
+ORDER BY 
+    total_purchase_amount DESC;
+    
+    -- Q 3 Show total sales grouped by country.
+    select c.country,sum(o.total_amount) as total_sale
+    from customers c inner join orders o 
+    on c.customers_id = o.customers_id group by country order by total_sale desc limit 5;
+    
+    -- Q4 . Find the average order value (AOV) per customer.
+SELECT 
+    c.customer_id,
+    c.customer_name,
+AVG(o.total_amount) AS average_order_value
+FROM customers c
+JOIN orders o
+ON c.customer_id = o.customer_id
+GROUP BY c.customer_id, c.customer_name
+ORDER BY average_order_value DESC;
+
+-- Q5  Show each product and total units sold.
+SELECT p.product_id,p.product_name,SUM(od.quantity) AS total_units_sold
+FROM products p
+JOIN order_details od
+ON p.product_id = od.product_id
+GROUP BY od.product_id
+ORDER BY total_units_sold DESC;
+
+-- Q 6- Find total revenue generated per product category.
+SELECT p.category,SUM(od.quantity * od.unit_price) AS total_revenue
+FROM products p JOIN order_details od ON p.product_id = od.product_id
+GROUP BY category;   
+
+-- 8. Group by month from order_date and show total order count.
+-- select date_format(order_date,"%n) as order_month  OR 
+select monthname(order_date) as order_month,
+count(customer_id) as total_count
+from orders group by order_month;

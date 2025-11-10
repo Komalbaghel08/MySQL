@@ -1,0 +1,13 @@
+use dumy;
+show tables;
+select * from customers;
+select * from customers where country = "france";
+select * from customers where country = "france" and country = "usa" ;
+select * from customers where country = "france" and creditlimit > 50000;
+select * from customers where country = "france" or country = "usa" ;
+select * from customers where country in("USA","FRANCE");
+select * from customers where country  not in ("USA","FRANCE"); 
+select * from customers order by customername asc;
+select * from customers where country = "france" order by customername asc;
+select * from customers where creditlimit > 5000 and  country = "france" order by customername desc;
+select * from customers order by creditlimit desc limit 5;
