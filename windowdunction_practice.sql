@@ -60,3 +60,70 @@ FROM sales_data
 GROUP BY sales_rep, month
 ORDER BY sales_rep,
 FIELD(month, 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
+
+
+#Q3 Find the average monthly sales amount for each region.
+-- (Use AVG() with PARTITION BY region)
+
+SELECT *,
+    AVG(sales_amount) AS monthly_avg_sales,
+    AVG(AVG(sales_amount)) OVER (PARTITION BY region) AS region_avg_sales
+FROM 
+    sales_data
+GROUP BY 
+    region, month
+ORDER BY 
+    region,
+    FIELD(month, 'Jan', 'Feb', 'Mar', 'Apr', 'May');
+
+
+#Q4 Compare each month’s sales amount with the previous month's sales for each sales rep.
+-- (Use LAG() window function)
+select *,
+lag(Sales_amount) over(partition by sales_rep)
+as lag_devision
+from sales_data;
+
+#Q5 Find the sales amount of the next month for each sales rep
+SELECT 
+    *,
+    LEAD(sales_amount) OVER (PARTITION BY sales_rep ORDER BY FIELD(month,'Jan','Feb','Mar','Apr','May')) AS next_month_sales
+FROM 
+    sales_data;
+    
+    
+
+#Q6 Find percentage of total regional sales contributed by each record
+SELECT *,(sales_amount * 100.0 / SUM(sales_amount) OVER (PARTITION BY region)) AS percent_contribution
+FROM sales_data;
+
+
+#Q7 Find highest monthly sales amount per sales rep
+SELECT *,MAX(sales_amount) OVER (PARTITION BY sales_rep) AS highest_monthly_sales
+FROM sales_data;
+
+
+#Q8 Check if sales increased compared to previous month
+
+SELECT 
+    *,
+    LAG(sales_amount) OVER (PARTITION BY sales_rep ORDER BY FIELD(month,'Jan','Feb','Mar','Apr','May')) AS prev_sales,
+    CASE 
+        WHEN sales_amount > LAG(sales_amount) OVER (PARTITION BY sales_rep ORDER BY FIELD(month,'Jan','Feb','Mar','Apr','May')) 
+        THEN 'Increased'
+        WHEN sales_amount < LAG(sales_amount) OVER (PARTITION BY sales_rep ORDER BY FIELD(month,'Jan','Feb','Mar','Apr','May')) 
+        THEN 'Decreased'
+        ELSE 'Same'
+    END AS sales_trend
+FROM sales_data; 
+
+
+#Q9 Assign row number to each sales rep within region and month
+SELECT *,ROW_NUMBER() OVER (PARTITION BY region, month ORDER BY sales_amount DESC) AS row_num
+FROM sales_data;
+
+#Q10 Compare each record’s sales with avg sales of same region & month
+SELECT *,AVG(sales_amount) OVER (PARTITION BY region, month) AS avg_sales,
+sales_amount - AVG(sales_amount) OVER (PARTITION BY region, month) AS diff_from_avg
+FROM sales_data;
+
