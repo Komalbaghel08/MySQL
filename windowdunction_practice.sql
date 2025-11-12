@@ -124,6 +124,5 @@ FROM sales_data;
 
 #Q10 Compare each record’s sales with avg sales of same region & month
 SELECT *,AVG(sales_amount) OVER (PARTITION BY region, month) AS avg_sales,
-sales_amount - AVG(sales_amount) OVER (PARTITION BY region, month) AS diff_from_avg
+    sales_amount - AVG(sales_amount) OVER (PARTITION BY region, month) AS diff_from_avg
 FROM sales_data;
-
