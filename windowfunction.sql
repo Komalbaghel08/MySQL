@@ -45,3 +45,14 @@ lag(sale) over(partition by fiscal_year order by sale desc)
 as lag_sale from sales1;
 
 #Row number-- by row aik aik number dega strting from 1
+select *,
+sum(sale) over(partition by fiscal_year order by sale desc) sum_sale,
+max(sale) over(partition by fiscal_year order by sale desc) max_sale,
+min(sale) over(partition by fiscal_year order by sale desc) min_sale,
+avg(sale) over(partition by fiscal_year order by sale desc) avg_sale,
+rank() over(partition by fiscal_year order by sale desc) as rnk,
+dense_rank() over(partition by fiscal_year order by sale desc) as drnk,
+lead(sale) over(partition by fiscal_year order by sale desc) as lead_sale,
+lag(sale) over(partition by fiscal_year order by sale desc) as lag_sale,
+row_number() over(partition by fiscal_year order by sale desc) as rownumber
+from sales1;
