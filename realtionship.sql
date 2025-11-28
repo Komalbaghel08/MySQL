@@ -57,3 +57,4 @@ alter table patient1 rename column doct_id to doctor_id;
 create table patient as select * from patient1;
 select * from patient1;
 select * from patient;
+
