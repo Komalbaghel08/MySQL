@@ -41,5 +41,4 @@ where creditlimit > any (
         where country = 'new york'
       );
 
-
 -- q6 
